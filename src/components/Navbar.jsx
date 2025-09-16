@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isAuth, setIsAuth] = useState(true);
@@ -7,7 +8,7 @@ const Navbar = () => {
     <div className="navbar bg-base-300 lg:py4 lg:px-5 md:py4 md:px-5 sm:py-2 shadow-sm flex items-center justify-between">
       {/* Left - Logo */}
       <div className="flex-shrink-0">
-        <a className="btn btn-ghost text-xl">Blogs</a>
+        <Link to={"/"} className="btn btn-ghost text-xl">Blogs</Link>
       </div>
 
       {/* Center - Search Bar */}
@@ -23,7 +24,7 @@ const Navbar = () => {
       <div className="flex gap-2">
         {!isAuth ? (
           <div className="flex gap-2">
-            <button className="btn btn-info">Login</button>
+            <Link to={'/login'}><button className="btn btn-info">Login</button></Link>
             <button className="btn btn-success">Register</button>
           </div>
         ) : (
@@ -45,13 +46,13 @@ const Navbar = () => {
               className="menu menu-md dropdown-content bg-gray-700 rounded-box z-[1] mt-3 w-40 p-2 shadow"
             >
               <li>
-                <a className="justify-between">
+                <Link to={'/profile'} className="justify-between">
                   Profile
                   <span className="badge">New</span>
-                </a>
+                </Link>
               </li>
               <li>
-                <a>Settings</a>
+                <Link to={'/admin'}>Dashboard</Link>
               </li>
               <li className="bg-red-500 rounded text-white">
                 <a>Logout</a>
