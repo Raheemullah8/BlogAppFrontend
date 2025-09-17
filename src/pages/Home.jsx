@@ -1,16 +1,20 @@
 import React from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import Slider from '../components/Slider'
+import CategoriesChips from '../components/CategoriesChips'
+import RecentPosts from '../components/PostCard'
+import PostCard from '../components/PostCard'
+
 
 function Home() {
   return (
-     <div>
-      
-      <div className="p-6">
-        <h1 className="text-3xl font-bold">Welcome to My Blog 🚀</h1>
-      </div>
-     
-    </div>
+<>
+
+<Slider/>
+<CategoriesChips/>
+<PostCard/>
+</>
   )
 }
 

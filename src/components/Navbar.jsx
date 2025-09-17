@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { MdDashboard } from "react-icons/md";
+import { FaUserCircle, FaSignOutAlt,FaDashcube } from "react-icons/fa";
+
 
 const Navbar = () => {
   const [isAuth, setIsAuth] = useState(true);
@@ -47,15 +50,15 @@ const Navbar = () => {
             >
               <li>
                 <Link to={'/profile'} className="justify-between">
-                  Profile
+                  <FaUserCircle/>Profile
                   <span className="badge">New</span>
                 </Link>
               </li>
               <li>
-                <Link to={'/admin'}>Dashboard</Link>
+                <Link to={'/admin'}><MdDashboard/>Dashboard</Link>
               </li>
               <li className="bg-red-500 rounded text-white">
-                <a>Logout</a>
+                <Link to={"#"}><FaSignOutAlt/>Logout</Link>
               </li>
             </ul>
           </div>

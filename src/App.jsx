@@ -21,8 +21,8 @@ function App() {
       {/* Public Layout */}
       <Route element={<MainLayout />}>
       <Route index element={<Home />} />
-      <Route path='register' element={<Register/>} />
       <Route path='login' element={<Login/>} />
+      <Route path='register' element={<Register/>} />
       <Route path='post/:id' element={<SinglePost/>} />
       <Route path='profile' element={<Profile/>} />
       
