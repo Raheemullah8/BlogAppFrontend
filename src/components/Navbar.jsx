@@ -1,11 +1,14 @@
-import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { MdDashboard } from "react-icons/md";
 import { FaUserCircle, FaSignOutAlt,FaDashcube } from "react-icons/fa";
-
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
-  const [isAuth, setIsAuth] = useState(true);
+  const isAuth = useSelector((state)=> state.auth.isAuthenticated)
+
+  
+  
+
 
   return (
     <div className="navbar bg-base-300 lg:py4 lg:px-5 md:py4 md:px-5 sm:py-2 shadow-sm flex items-center justify-between">
