@@ -1,14 +1,21 @@
 import { Link } from "react-router-dom";
 import { MdDashboard } from "react-icons/md";
-import { FaUserCircle, FaSignOutAlt,FaDashcube } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { FaUserCircle, FaSignOutAlt, FaDashcube } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { Logout } from "../store/slices/authSlice";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
-  const isAuth = useSelector((state)=> state.auth.isAuthenticated)
+  const { isAuthenticated, user } = useSelector((state) => state.auth)
+  const dispatch = useDispatch()
+  const navgate = useNavigate();
+  const handleSubmit = () => {
+    dispatch(Logout())
+    toast.success("Logout Successful")
+    navgate('/login')
 
-  
-  
-
+  }
 
   return (
     <div className="navbar bg-base-300 lg:py4 lg:px-5 md:py4 md:px-5 sm:py-2 shadow-sm flex items-center justify-between">
@@ -28,10 +35,10 @@ const Navbar = () => {
 
       {/* Right - Auth / Avatar */}
       <div className="flex gap-2">
-        {!isAuth ? (
+        {!isAuthenticated ? (
           <div className="flex gap-2">
             <Link to={'/login'}><button className="btn btn-info">Login</button></Link>
-            <button className="btn btn-success">Register</button>
+            <Link to={'/register'}><button className="btn btn-success">Register</button></Link>
           </div>
         ) : (
           <div className="dropdown dropdown-end">
@@ -43,7 +50,7 @@ const Navbar = () => {
               <div className="w-10 rounded-full">
                 <img
                   alt="Tailwind CSS Navbar component"
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                  src={user?.profileImage || "https://placeimg.com/80/80/people"}
                 />
               </div>
             </div>
@@ -52,16 +59,28 @@ const Navbar = () => {
               className="menu menu-md dropdown-content bg-gray-700 rounded-box z-[1] mt-3 w-40 p-2 shadow"
             >
               <li>
+                <Link className="flex flex-col px-3 py-2 rounded-md hover:bg-gray-400">
+                  <span className="font-semibold text-gray-300">{user.name}</span>
+                  <span className="text-sm text-gray-100">{user.email}</span>
+                </Link>
+              </li>
+
+              <li>
                 <Link to={'/profile'} className="justify-between">
-                  <FaUserCircle/>Profile
+                  <FaUserCircle />Profile
                   <span className="badge">New</span>
                 </Link>
               </li>
-              <li>
-                <Link to={'/admin'}><MdDashboard/>Dashboard</Link>
-              </li>
+              {
+                user.role === 'admin' && (
+                  <li>
+                    <Link to={'/admin'}><MdDashboard />Dashboard</Link>
+                  </li>
+                )
+              }
+
               <li className="bg-red-500 rounded text-white">
-                <Link to={"#"}><FaSignOutAlt/>Logout</Link>
+                <button onClick={handleSubmit}><FaSignOutAlt />Logout</button>
               </li>
             </ul>
           </div>

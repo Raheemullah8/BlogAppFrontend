@@ -65,7 +65,7 @@ function Login() {
             {...register("password", {
               required: "Password is required",
               minLength: {
-                value: 4,
+                value: 6,
                 message: "Password must be at least 6 characters",
               },
             })}

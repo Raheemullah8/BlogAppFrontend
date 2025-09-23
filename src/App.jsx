@@ -12,7 +12,8 @@ import Post from "./pages/dashboard/Post"
 import Category from "./pages/dashboard/Categories"
 import Users from './pages/dashboard/Users'
 import { Toaster } from 'react-hot-toast'
-
+import ProtectedRoute from './components/ProtectedRoute'
+import GuestRoute from './components/GuestRoute'
 function App() {
   return (
     <>
@@ -21,14 +22,36 @@ function App() {
         {/* Public Layout */}
         <Route element={<MainLayout />}>
           <Route index element={<Home />} />
-          <Route path='login' element={<Login />} />
-          <Route path='register' element={<Register />} />
-          <Route path='post/:id' element={<SinglePost />} />
-          <Route path='profile' element={<Profile />} />
+          <Route path='login' element={
+            <GuestRoute>
+            <Login />
+            </GuestRoute>
+          } 
+            />
+          <Route path='register' element={
+            <GuestRoute>
+            <Register />
+            </GuestRoute>
+            } />
+
+          <Route path='post/:id' element={
+            <ProtectedRoute >
+            <SinglePost />
+            </ProtectedRoute>
+            } />
+          <Route path='profile' element={
+            <ProtectedRoute >
+            <Profile />
+            </ProtectedRoute>
+            } />
         </Route>
 
         {/* Admin Layout */}
-        <Route path='/admin' element={<AdminLayout />}>
+        <Route path='/admin' element={
+          <ProtectedRoute role="admin">
+          <AdminLayout />
+          </ProtectedRoute>
+          }>
           <Route index element={<DashboardHome />} />
           <Route path='posts' element={<Post />} />
           <Route path='category' element={<Category />} />
