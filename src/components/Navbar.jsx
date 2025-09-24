@@ -4,21 +4,31 @@ import { FaUserCircle, FaSignOutAlt, FaDashcube } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Logout } from "../store/slices/authSlice";
+import { useLogoutUserMutation } from "../store/services/authApi";
 import toast from "react-hot-toast";
 
 const Navbar = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth)
+  const [logoutUser] = useLogoutUserMutation();
   const dispatch = useDispatch()
   const navgate = useNavigate();
-  const handleSubmit = () => {
+
+  const handleSubmit = async () => {
+  try{
+  await logoutUser().unwrap();
     dispatch(Logout())
     toast.success("Logout Successful")
     navgate('/login')
+  }catch(error){
+    const errorMessage = error?.data?.message || 'Logout failed. Please try again.';
+    toast.error(errorMessage);
+    console.error("Logout error:", error);
+  }
 
   }
 
   return (
-    <div className="navbar bg-base-300 lg:py4 lg:px-5 md:py4 md:px-5 sm:py-2 shadow-sm flex items-center justify-between">
+    <div className="navbar sticky top-0 z-99  bg-base-300 lg:py4 lg:px-5 md:py4 md:px-5 sm:py-2 shadow-sm flex items-center justify-between">
       {/* Left - Logo */}
       <div className="flex-shrink-0">
         <Link to={"/"} className="btn btn-ghost text-xl">Blogs</Link>

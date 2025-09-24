@@ -1,21 +1,43 @@
 import React from "react";
 import { FaTrash } from "react-icons/fa";
+import { useGetUsersQuery, useDeleteUserMutation } from "../../store/services/authApi";
+import Loading from "../../components/Loading";
+import ErrorPage from "../../components/ErrorPage";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 function Users() {
-  const users = [
-    {
-      id: 1,
-      username: "JohnDoe",
-      email: "john@example.com",
-      profile: "https://via.placeholder.com/150",
-    },
-    {
-      id: 2,
-      username: "JaneSmith",
-      email: "jane@example.com",
-      profile: "https://via.placeholder.com/150",
-    },
-  ];
+  const { data, error, isLoading,refetch } = useGetUsersQuery();
+  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
+  const navigate = useNavigate();
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      try {
+        await deleteUser(id).unwrap();
+        toast.success("User deleted successfully");
+        refetch();
+        // Navigation successful deletion ke baad ho.
+        navigate('/admin/users');
+      } catch (err) {
+        const errorMessage = err?.data?.message || 'Failed to delete user. Please try again.';
+        toast.error(errorMessage);
+        console.error("Deletion error:", err);
+      }
+    }
+  };
+
+  if (isLoading) {
+    return <Loading />;
+  }
+  if (error) {
+    return (
+      <ErrorPage
+        message={error.status ? `Failed to load users. Status: ${error.status}` : "Failed to load users."}
+        code={error.status || 500}
+      />
+    );
+  }
 
   return (
     <div className="p-4 space-y-6">
@@ -37,21 +59,28 @@ function Users() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, i) => (
-              <tr key={user.id}>
+            {data?.users?.map((user, i) => (
+              <tr key={user?._id}>
                 <td>{i + 1}</td>
                 <td>
                   <div className="avatar">
                     <div className="w-12 h-12 rounded-full">
-                      <img src={user.profile} alt={user.username} />
+                      <img
+                        src={user?.profileImage}
+                        alt={user?.name}
+                      />
                     </div>
                   </div>
                 </td>
-                <td>{user.username}</td>
-                <td>{user.email}</td>
+                <td>{user?.name}</td>
+                <td>{user?.email}</td>
                 <td>
-                  <button className="btn btn-sm btn-error flex items-center gap-1">
-                    <FaTrash /> Delete
+                  <button
+                    onClick={() => handleDelete(user._id)}
+                    disabled={isDeleting}
+                    className="btn btn-sm btn-error flex items-center gap-1"
+                  >
+                    <FaTrash />  {isDeleting ? 'Deleting...' : 'Delete'}
                   </button>
                 </td>
               </tr>
@@ -62,24 +91,31 @@ function Users() {
 
       {/* Card Section for Mobile */}
       <div className="md:hidden space-y-4">
-        {users.map((user) => (
+        {data?.users?.map((user) => (
           <div
-            key={user.id}
+            key={user?._id}
             className="card bg-base-200 shadow p-4 flex items-center justify-between"
           >
             <div className="flex items-center gap-3">
               <div className="avatar">
                 <div className="w-12 h-12 rounded-full">
-                  <img src={user.profile} alt={user.username} />
+                  <img
+                    src={user?.profileImage}
+                    alt={user?.name}
+                  />
                 </div>
               </div>
               <div>
-                <h3 className="font-bold">{user.username}</h3>
-                <p className="text-sm text-gray-500">{user.email}</p>
+                <h3 className="font-bold">{user?.name}</h3>
+                <p className="text-sm text-gray-500">{user?.email}</p>
               </div>
             </div>
-            <button className="btn btn-sm btn-error flex items-center gap-1">
-              <FaTrash /> Delete
+            <button
+              onClick={() => handleDelete(user._id)}
+              disabled={isDeleting}
+              className="btn btn-sm btn-error flex items-center gap-1"
+            >
+              <FaTrash /> {isDeleting ? 'Deleting...' : 'Delete'}
             </button>
           </div>
         ))}

@@ -6,7 +6,7 @@ import Footer from "../components/Footer";
 function MainLayout() {
     return (
         <div>
-            <Navbar />
+            <Navbar  />
             <main className="min-h-screen">
                 <Outlet /> {/* child route yahan render hoga */}
             </main>

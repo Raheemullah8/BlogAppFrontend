@@ -1,7 +1,17 @@
 import React from "react";
 import { Users, FileText, MessageSquare, Folder } from "lucide-react";
+import { useGetUsersQuery } from "../../store/services/authApi";
+import Loading from "../../components/Loading";
 
 function DashboardHome() {
+  const { data, error, isLoading } = useGetUsersQuery();
+  if (isLoading) {
+    return <Loading />;
+  }
+  if (error) {
+    return <div>Error loading data</div>;
+  }
+
   return (
     <div className="p-6 space-y-6">
       {/* Heading */}
@@ -15,7 +25,7 @@ function DashboardHome() {
             <Users size={32} />
           </div>
           <div className="stat-title">Total Users</div>
-          <div className="stat-value">120</div>
+          <div className="stat-value">{data?.users?.length}</div>
           <div className="stat-desc">+12 new this month</div>
         </div>
 
