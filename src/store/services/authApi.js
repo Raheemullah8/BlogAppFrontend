@@ -40,6 +40,14 @@ export const authApi = createApi({
         method: "POST",
         credentials: "include", // Include cookies in the request
       }),
+    }),
+    updateProfile: builder.mutation({
+      query:({id, formData}) =>({
+        url: `/auth/updateusers/${id}`,
+        method: "PATCH",
+        body: formData,
+        credentials: "include",
+      })
     })
 
 
@@ -49,4 +57,4 @@ export const authApi = createApi({
 
 });
 
-export const { useLoginUserMutation, useRegisterUserMutation, useDeleteUserMutation, useLogoutUserMutation, useGetUsersQuery } = authApi;
+export const { useLoginUserMutation, useRegisterUserMutation, useDeleteUserMutation,useUpdateProfileMutation, useLogoutUserMutation, useGetUsersQuery } = authApi;

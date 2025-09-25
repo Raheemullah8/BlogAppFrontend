@@ -10,20 +10,23 @@ import {
     PURGE,
     REGISTER
 } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
+import storage from "redux-persist/lib/storage"; 
 import { authApi } from "./services/authApi";
+import { categoryApi } from "./services/categoryApi";
 
 const persistConfig = {
-  key: "auth",   // sirf auth slice ke liye persist
+  key: "auth",   
   storage,
   whitelist: ["user", "token", "isAuthenticated"], 
 };
 
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
+
 export const store = configureStore({
     reducer: {
         auth: persistedAuthReducer,
-       [authApi.reducerPath]: authApi.reducer,
+        [authApi.reducerPath]: authApi.reducer,
+        [categoryApi.reducerPath]: categoryApi.reducer,
     },
 
     middleware: (getDefaultMiddleware) =>
@@ -33,6 +36,8 @@ export const store = configureStore({
             },
         }).concat(
             authApi.middleware,
+            categoryApi.middleware,
         ),
 })
+
 export const persistor = persistStore(store);

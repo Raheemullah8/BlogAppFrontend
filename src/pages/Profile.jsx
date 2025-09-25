@@ -1,20 +1,66 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
+import { useUpdateProfileMutation } from "../store/services/authApi";
+import { updateUser } from "../store/slices/authSlice.js";
+import { toast } from "react-hot-toast";
 
 function Profile() {
+  const { user } = useSelector((state) => state.auth);
+  const [updateProfile, { isLoading }] = useUpdateProfileMutation();
+  const dispatch = useDispatch();
   const [image, setImage] = useState(null);
   const fileInputRef = useRef(null);
 
-  // Handle image change
+  const { register, handleSubmit, setValue, getValues, formState: { errors } } = useForm();
+
+  // Prefill form with Redux user data
+  useEffect(() => {
+    if (user) {
+      setValue("name", user.name || "");
+      setValue("email", user.email || "");
+      if (user.profileImage) {
+        setImage(user.profileImage);
+      }
+    }
+  }, [user, setValue]);
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImage(URL.createObjectURL(file));
+      setImage(URL.createObjectURL(file)); // For image preview
+      setValue("profileImage", file); // Set the file in React Hook Form's state
     }
   };
 
-  // Trigger file input when image is clicked
   const handleImageClick = () => {
     fileInputRef.current.click();
+  };
+
+  // Form submit handler
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("email", data.email);
+
+      // Only append password if it has a value
+      if (data.password) {
+        formData.append("password", data.password);
+      }
+
+      // Check if a new profile image was selected
+      const profileImageFile = getValues("profileImage");
+      if (profileImageFile) {
+        formData.append("profileImage", profileImageFile);
+      }
+
+      const response = await updateProfile({ id: user._id, formData }).unwrap();
+      dispatch(updateUser(response.user));
+      toast.success(response.message || "Profile updated successfully");
+    } catch (error) {
+      toast.error(error?.data?.message || "Update failed");
+    }
   };
 
   return (
@@ -24,59 +70,57 @@ function Profile() {
           My Profile
         </legend>
 
-        {/* Profile Image Upload */}
+        {/* Profile Image */}
         <div
           className="w-32 h-32 rounded-full overflow-hidden border-2 border-gray-500 shadow-md cursor-pointer"
           onClick={handleImageClick}
         >
           <img
-            src={
-              image
-                ? image
-                : "https://via.placeholder.com/150x150.png?text=Profile"
-            }
+            src={image || "https://via.placeholder.com/150x150.png?text=Profile"}
             alt="profile preview"
             className="w-full h-full object-cover"
           />
         </div>
 
-        {/* Hidden File Input */}
+        {/* Hidden file input */}
         <input
           type="file"
           accept="image/*"
           ref={fileInputRef}
-          className="hidden"
+          style={{ display: "none" }}
           onChange={handleImageChange}
         />
 
-        {/* Name */}
-        <label className="label w-full">Name</label>
-        <input
-          type="text"
-          className="input input-bordered w-full"
-          placeholder="Enter your name"
-          defaultValue="John Doe"
-        />
+        {/* Form */}
+        <form className="w-full flex flex-col gap-3 mt-4" onSubmit={handleSubmit(onSubmit)}>
+          <label className="label w-full">Name</label>
+          <input
+            type="text"
+            className="input input-bordered w-full"
+            {...register("name", { required: "Name is required" })}
+          />
+          {errors.name && <p className="text-red-500">{errors.name.message}</p>}
 
-        {/* Email */}
-        <label className="label w-full">Email</label>
-        <input
-          type="email"
-          className="input input-bordered w-full"
-          placeholder="Enter your email"
-          defaultValue="johndoe@example.com"
-        />
+          <label className="label w-full">Email</label>
+          <input
+            type="email"
+            className="input input-bordered w-full"
+            {...register("email", { required: "Email is required" })}
+          />
+          {errors.email && <p className="text-red-500">{errors.email.message}</p>}
 
-        {/* Password Update */}
-        <label className="label w-full">Change Password</label>
-        <input
-          type="password"
-          className="input input-bordered w-full"
-          placeholder="Enter new password"
-        />
+          <label className="label w-full">Change Password</label>
+          <input
+            type="password"
+            className="input input-bordered w-full"
+            {...register("password")}
+            placeholder="Enter new password"
+          />
 
-        {/* Save Button */}
-        <button className="btn btn-primary w-full mt-4">Save Changes</button>
+          <button className="btn btn-primary w-full mt-4" type="submit" disabled={isLoading}>
+            {isLoading ? "Updating..." : "Save Changes"}
+          </button>
+        </form>
       </fieldset>
     </div>
   );
