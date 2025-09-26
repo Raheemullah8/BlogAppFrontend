@@ -2,15 +2,16 @@ import React from "react";
 import { Users, FileText, MessageSquare, Folder } from "lucide-react";
 import { useGetUsersQuery } from "../../store/services/authApi";
 import Loading from "../../components/Loading";
+import { useGetCategoryQuery } from "../../store/services/categoryApi";
 
 function DashboardHome() {
-  const { data, error, isLoading } = useGetUsersQuery();
-  if (isLoading) {
+  const { data: usersData, isLoading } = useGetUsersQuery();
+  const { data: categoriesData, isLoading: catLoading } = useGetCategoryQuery();
+
+  if (isLoading || catLoading) {
     return <Loading />;
   }
-  if (error) {
-    return <div>Error loading data</div>;
-  }
+  
 
   return (
     <div className="p-6 space-y-6">
@@ -25,7 +26,7 @@ function DashboardHome() {
             <Users size={32} />
           </div>
           <div className="stat-title">Total Users</div>
-          <div className="stat-value">{data?.users?.length}</div>
+          <div className="stat-value">{usersData?.users?.length || 0}</div>
           <div className="stat-desc">+12 new this month</div>
         </div>
 
@@ -55,7 +56,7 @@ function DashboardHome() {
             <Folder size={32} />
           </div>
           <div className="stat-title">Categories</div>
-          <div className="stat-value">18</div>
+          <div className="stat-value">{categoriesData?.data?.length || 0}</div>
           <div className="stat-desc">2 new this month</div>
         </div>
       </div>

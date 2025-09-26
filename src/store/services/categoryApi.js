@@ -21,7 +21,7 @@ export const categoryApi = createApi({
             query: () => ({
                 url: "/category/getcategory",
                 method: "GET",
-                credentials: "include", // 👈 ye zaroori hai
+               
             }),
             providesTags: ['Category'],
         }),
@@ -32,10 +32,20 @@ export const categoryApi = createApi({
     credentials: "include", // agar auth required hai
   }),
   invalidatesTags: ["Category"],
+}),
+updateCategory: builder.mutation({
+  query: ({ id, formdata }) => ({
+    url: `/category/updatecategory/${id}`, // ✅ backend route theek hona chahiye
+    method: "PATCH",
+    body: formdata, // ✅ agar JSON bhejna hai to object hi chalega
+    credentials: "include", // ✅ cookie/session ke liye
+  }),
+  invalidatesTags: ["Category"],
 })
+
 
 
     })
 });
 
-export const { useCreateCategoryMutation, useGetCategoryQuery,useDeleteCategoryMutation } = categoryApi;
+export const { useCreateCategoryMutation, useGetCategoryQuery,useDeleteCategoryMutation,useUpdateCategoryMutation} = categoryApi;

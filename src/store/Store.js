@@ -13,6 +13,7 @@ import {
 import storage from "redux-persist/lib/storage"; 
 import { authApi } from "./services/authApi";
 import { categoryApi } from "./services/categoryApi";
+import { postApi } from "./services/postApi";
 
 const persistConfig = {
   key: "auth",   
@@ -27,6 +28,7 @@ export const store = configureStore({
         auth: persistedAuthReducer,
         [authApi.reducerPath]: authApi.reducer,
         [categoryApi.reducerPath]: categoryApi.reducer,
+        [postApi.reducerPath]: categoryApi.reducer,
     },
 
     middleware: (getDefaultMiddleware) =>
@@ -37,6 +39,7 @@ export const store = configureStore({
         }).concat(
             authApi.middleware,
             categoryApi.middleware,
+            postApi.middleware,
         ),
 })
 

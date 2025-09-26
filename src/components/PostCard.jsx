@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
+import { useGetAllPostQuery } from "../store/services/postApi";
 
 const posts = [
   {
@@ -34,6 +35,10 @@ const posts = [
 ];
 
 function PostCard() {
+
+const {data: fetchedPosts} = useGetAllPostQuery(); // Optional: rename 'data' for clarity
+
+ console.log(fetchedPosts,"post-Data"); 
   
   return (
     <div className="px-6 py-10">

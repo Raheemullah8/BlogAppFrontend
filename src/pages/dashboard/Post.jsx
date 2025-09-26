@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import PostModal from "../../components/PostModal";
 
+
+
 function Post() {
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
 
   const posts = [
     {
