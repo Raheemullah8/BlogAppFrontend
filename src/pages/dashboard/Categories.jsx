@@ -7,7 +7,6 @@ import toast from "react-hot-toast";
 
 function Categories() {
 
- 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {data,isLoading} = useGetCategoryQuery();
   const [deleteCategory] = useDeleteCategoryMutation();
@@ -97,7 +96,7 @@ const UpdateCategory = async (id,formData) =>{
       <div className="md:hidden space-y-4">
         {data?.data?.map((cat, i) => (
           <div
-            key={cat.id}
+            key={cat._id}
             className="card bg-base-200 shadow p-4 flex justify-between items-center"
           >
             <div>

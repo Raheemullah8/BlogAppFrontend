@@ -8,6 +8,12 @@ export const postApi = createApi({
   }),
   tagTypes: ["Post"],
   endpoints: (builder) => ({
+
+    getPost: builder.query({
+      query:() => "/post/getallpost",
+        providesTags: ["Post"],
+    }),
+
     // 🔹 Create Post
     createPost: builder.mutation({
       query: (formData) => ({
@@ -18,18 +24,9 @@ export const postApi = createApi({
       }),
       invalidatesTags: ["Post"], 
     }),
-
-   
-      getAllPost: builder.query({
-            query: () => ({
-                url: "/post/getallpost",
-                method: "GET",
-               
-            }),
-            providesTags: ['Category'],
-        }),
+     
   }),
 });
 
 // ✅ hooks export
-export const { useCreatePostMutation, useGetAllPostQuery } = postApi;
+export const { useCreatePostMutation,useGetPostQuery} = postApi;

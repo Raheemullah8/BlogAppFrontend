@@ -3,12 +3,14 @@ import { Users, FileText, MessageSquare, Folder } from "lucide-react";
 import { useGetUsersQuery } from "../../store/services/authApi";
 import Loading from "../../components/Loading";
 import { useGetCategoryQuery } from "../../store/services/categoryApi";
+import { useGetPostQuery } from "../../store/services/postApi";
 
 function DashboardHome() {
   const { data: usersData, isLoading } = useGetUsersQuery();
   const { data: categoriesData, isLoading: catLoading } = useGetCategoryQuery();
+  const {data: postData, isLoading:postLoading} = useGetPostQuery();
 
-  if (isLoading || catLoading) {
+  if (isLoading || catLoading || postLoading) {
     return <Loading />;
   }
   
@@ -36,7 +38,7 @@ function DashboardHome() {
             <FileText size={32} />
           </div>
           <div className="stat-title">Total Posts</div>
-          <div className="stat-value">350</div>
+          <div className="stat-value">{postData?.data?.length}</div>
           <div className="stat-desc">+25 new this week</div>
         </div>
 
