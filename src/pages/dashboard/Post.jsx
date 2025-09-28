@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import PostModal from "../../components/PostModal";
-import { useGetPostQuery } from "../../store/services/postApi";
+import { useGetPostQuery,useDeletePostMutation } from "../../store/services/postApi";
 import Loading from "../../components/Loading";
+import toast from "react-hot-toast";
+
 
 
 function Post() {
   const { data, isLoading } = useGetPostQuery();
+  const [deletePost,{idLoading:isDeleting}] = useDeletePostMutation();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // 1. Loading State Check (already present)
@@ -18,7 +21,13 @@ function Post() {
   const posts = data?.data || [];
   const noPosts = posts.length === 0;
   const HandelDelete = async (id) =>{
-    alert(id)
+  try {
+      const res = await deletePost(id).unwrap()
+    toast.success(res.message|| "Post Delete Successfull")
+  } catch (error) {
+    console.error("Delete Error:", error);
+      toast.error(error?.data?.message || "Failed to delete post.");
+  }
 
   }
 
@@ -73,8 +82,9 @@ function Post() {
                     <td>
                       <button
                       onClick={()=>HandelDelete(post?._id)}
+                      disabled={isDeleting}
                        className="btn btn-sm btn-error flex items-center gap-1">
-                        <FaTrash /> Delete
+                        <FaTrash /> {isDeleting ? "Deleting..." : "Delete"}
                       </button>
                     </td>
                   </tr>
@@ -101,8 +111,9 @@ function Post() {
                 </div>
                 <button 
                 onClick={()=>HandelDelete(post?._id)}
+                disabled={isDeleting}
                 className="btn btn-sm btn-error flex items-center gap-1">
-                  <FaTrash /> Delete
+                  <FaTrash /> {isDeleting ? "Deleting..." : "Delete"}
                 </button>
               </div>
             ))}

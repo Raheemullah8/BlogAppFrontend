@@ -4,14 +4,13 @@ export const postApi = createApi({
   reducerPath: "postApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:8000/api",
-   
   }),
   tagTypes: ["Post"],
   endpoints: (builder) => ({
 
     getPost: builder.query({
-      query:() => "/post/getallpost",
-        providesTags: ["Post"],
+      query: () => "/post/getallpost",
+      providesTags: ["Post"],
     }),
 
     // 🔹 Create Post
@@ -20,13 +19,38 @@ export const postApi = createApi({
         url: "/post/createpost",
         method: "POST",
         body: formData,
-         credentials: "include", 
+        credentials: "include",
       }),
-      invalidatesTags: ["Post"], 
+      invalidatesTags: ["Post"],
     }),
-     
+
+    getSinglePost: builder.query({
+      // Query function ko object return karna hoga
+      query: (id) => ({
+        url: `/post/getsinglepost/${id}`,
+        method: "GET",
+        // 🔑 Ye line browser ko cookie store se token utha kar request me dalne ko kehti hai
+        credentials: "include",
+      }),
+      providesTags: (result, error, id) => [{ type: 'Post', id }],
+    }),
+
+    deletePost: builder.mutation({
+      query: (id) => ({
+        url: `/post/deletepost/${id}`,
+        method: "DELETE",
+        credentials: "include",
+      }),
+      invalidatesTags: ["Post"],
+    }),
+
   }),
 });
 
-// ✅ hooks export
-export const { useCreatePostMutation,useGetPostQuery} = postApi;
+// ✅ Export the new hook: useGetSinglePostQuery
+export const {
+  useCreatePostMutation,
+  useGetPostQuery,
+  useGetSinglePostQuery, // <-- NEW/CORRECTED HOOK
+  useDeletePostMutation
+} = postApi;
