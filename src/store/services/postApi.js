@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const postApi = createApi({
   reducerPath: "postApi",
   baseQuery: fetchBaseQuery({
-  baseUrl: "https://blog-app-backend-bofwh90s4-raheemullah8s-projects-adbcc6f8.vercel.app/api",
+  baseUrl: import.meta.env.VITE_BACKEND_APIURL,
   }),
   tagTypes: ["Post"],
   endpoints: (builder) => ({
