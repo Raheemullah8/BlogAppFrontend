@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { useGetUsersQuery, useDeleteUserMutation } from "../../store/services/authApi";
 import Loading from "../../components/Loading";
@@ -8,42 +8,43 @@ import { useNavigate } from "react-router-dom";
 
 function Users() {
   const { data, error, isLoading, refetch } = useGetUsersQuery();
-  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
+  const [deleteUser] = useDeleteUserMutation();
   const navigate = useNavigate();
 
+  // ✅ Track deleting state per user
+  const [deletingIds, setDeletingIds] = useState(new Set());
+
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      try {
-        await deleteUser(id).unwrap();
-        toast.success("User deleted successfully");
-        refetch();
-        navigate("/admin/users");
-      } catch (err) {
-        const errorMessage =
-          err?.data?.message || "Failed to delete user. Please try again.";
-        toast.error(errorMessage);
-        console.error("Deletion error:", err);
-      }
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+
+    setDeletingIds(prev => new Set(prev).add(id)); // mark as deleting
+    try {
+      await deleteUser(id).unwrap();
+      toast.success("User deleted successfully");
+      refetch();
+      navigate("/admin/users");
+    } catch (err) {
+      toast.error(err?.data?.message || "Failed to delete user. Please try again.");
+      console.error("Deletion error:", err);
+    } finally {
+      setDeletingIds(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(id); // remove deleting state
+        return newSet;
+      });
     }
   };
 
-  if (isLoading) {
-    return <Loading />;
-  }
+  if (isLoading) return <Loading />;
   if (error) {
     return (
       <ErrorPage
-        message={
-          error.status
-            ? `Failed to load users. Status: ${error.status}`
-            : "Failed to load users."
-        }
+        message={error.status ? `Failed to load users. Status: ${error.status}` : "Failed to load users."}
         code={error.status || 500}
       />
     );
   }
 
-  // ✅ Agar koi user hi nahi hai
   if (!data?.users || data.users.length === 0) {
     return (
       <div className="p-10 text-center">
@@ -59,7 +60,7 @@ function Users() {
         <h2 className="text-2xl font-bold">All Users</h2>
       </div>
 
-      {/* Table Section for Desktop */}
+      {/* Table for Desktop */}
       <div className="hidden md:block overflow-x-auto">
         <table className="table table-zebra w-full">
           <thead>
@@ -73,7 +74,7 @@ function Users() {
           </thead>
           <tbody>
             {data.users.map((user, i) => (
-              <tr key={user?._id}>
+              <tr key={user._id}>
                 <td>{i + 1}</td>
                 <td>
                   <div className="avatar">
@@ -87,10 +88,10 @@ function Users() {
                 <td>
                   <button
                     onClick={() => handleDelete(user._id)}
-                    disabled={isDeleting}
+                    disabled={deletingIds.has(user._id)}
                     className="btn btn-sm btn-error flex items-center gap-1"
                   >
-                    <FaTrash /> {isDeleting ? "Deleting..." : "Delete"}
+                    <FaTrash /> {deletingIds.has(user._id) ? "Deleting..." : "Delete"}
                   </button>
                 </td>
               </tr>
@@ -99,11 +100,11 @@ function Users() {
         </table>
       </div>
 
-      {/* Card Section for Mobile */}
+      {/* Mobile Cards */}
       <div className="md:hidden space-y-4">
         {data.users.map((user) => (
           <div
-            key={user?._id}
+            key={user._id}
             className="card bg-base-200 shadow p-4 flex items-center justify-between"
           >
             <div className="flex items-center gap-3">
@@ -119,10 +120,10 @@ function Users() {
             </div>
             <button
               onClick={() => handleDelete(user._id)}
-              disabled={isDeleting}
+              disabled={deletingIds.has(user._id)}
               className="btn btn-sm btn-error flex items-center gap-1"
             >
-              <FaTrash /> {isDeleting ? "Deleting..." : "Delete"}
+              <FaTrash /> {deletingIds.has(user._id) ? "Deleting..." : "Delete"}
             </button>
           </div>
         ))}

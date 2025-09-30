@@ -1,60 +1,58 @@
 import React, { useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import PostModal from "../../components/PostModal";
-import { useGetPostQuery,useDeletePostMutation } from "../../store/services/postApi";
+import { useGetPostQuery, useDeletePostMutation } from "../../store/services/postApi";
 import Loading from "../../components/Loading";
 import toast from "react-hot-toast";
 
-
-
 function Post() {
   const { data, isLoading } = useGetPostQuery();
-  const [deletePost,{idLoading:isDeleting}] = useDeletePostMutation();
+  const [deletePost] = useDeletePostMutation();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // 1. Loading State Check (already present)
-  if (isLoading) {
-    return <Loading />
-  }
+  // Track deleting state per post
+  const [deletingIds, setDeletingIds] = useState(new Set());
 
-  // Simplify data access and check for empty state
+  if (isLoading) return <Loading />;
+
   const posts = data?.data || [];
   const noPosts = posts.length === 0;
-  const HandelDelete = async (id) =>{
-  try {
-      const res = await deletePost(id).unwrap()
-    toast.success(res.message|| "Post Delete Successfull")
-  } catch (error) {
-    console.error("Delete Error:", error);
-      toast.error(error?.data?.message || "Failed to delete post.");
-  }
 
-  }
+  const handleDelete = async (id) => {
+    setDeletingIds(prev => new Set(prev).add(id));
+    try {
+      const res = await deletePost(id).unwrap();
+      toast.success(res.message || "Post Deleted Successfully");
+    } catch (error) {
+      toast.error(error?.data?.message || "Delete failed");
+    } finally {
+      setDeletingIds(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
+    }
+  };
 
   return (
     <div className="p-4 space-y-6">
-      {/* Header Section */}
+      {/* Header */}
       <div className="flex justify-between items-center flex-wrap gap-2">
         <h2 className="text-2xl font-bold">All Posts</h2>
-        <button
-          className="btn btn-primary"
-          onClick={() => setIsModalOpen(true)}
-        >
+        <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
           + Add Post
         </button>
       </div>
 
-      {/* 2. No Posts Found Message */}
       {noPosts ? (
         <div className="alert alert-info shadow-lg">
           <div>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current flex-shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span>No posts found. Click "+ Add Post" to create a new one!</span>
           </div>
         </div>
       ) : (
         <>
-          {/* Table Section for md+ screens */}
+          {/* Table for md+ */}
           <div className="hidden md:block overflow-x-auto">
             <table className="table table-zebra w-full">
               <thead>
@@ -81,10 +79,11 @@ function Post() {
                     <td>{post?.category?.name}</td>
                     <td>
                       <button
-                      onClick={()=>HandelDelete(post?._id)}
-                      disabled={isDeleting}
-                       className="btn btn-sm btn-error flex items-center gap-1">
-                        <FaTrash /> {isDeleting ? "Deleting..." : "Delete"}
+                        onClick={() => handleDelete(post._id)}
+                        disabled={deletingIds.has(post._id)}
+                        className="btn btn-sm btn-error flex items-center gap-1"
+                      >
+                        <FaTrash /> {deletingIds.has(post._id) ? "Deleting..." : "Delete"}
                       </button>
                     </td>
                   </tr>
@@ -93,9 +92,9 @@ function Post() {
             </table>
           </div>
 
-          {/* Card/List view for mobile */}
+          {/* Mobile cards */}
           <div className="md:hidden space-y-4">
-            {posts.map((post) => (
+            {posts.map((post, i) => (
               <div
                 key={post._id}
                 className="card bg-base-200 shadow p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4"
@@ -109,11 +108,12 @@ function Post() {
                   <h3 className="font-bold">{post.content}</h3>
                   <p className="text-sm text-gray-500">{post.category.name}</p>
                 </div>
-                <button 
-                onClick={()=>HandelDelete(post?._id)}
-                disabled={isDeleting}
-                className="btn btn-sm btn-error flex items-center gap-1">
-                  <FaTrash /> {isDeleting ? "Deleting..." : "Delete"}
+                <button
+                  onClick={() => handleDelete(post._id)}
+                  disabled={deletingIds.has(post._id)}
+                  className="btn btn-sm btn-error flex items-center gap-1"
+                >
+                  <FaTrash /> {deletingIds.has(post._id) ? "Deleting..." : "Delete"}
                 </button>
               </div>
             ))}
@@ -121,8 +121,6 @@ function Post() {
         </>
       )}
 
-
-      {/* Modal */}
       <PostModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
