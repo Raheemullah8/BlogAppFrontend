@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const categoryApi = createApi({
     reducerPath: "categoryApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: import.meta.env.VITE_BACKEND_APIURL,
+        baseUrl: "https://blog-app-backend-kappa-sepia.vercel.app/api",
     }),
     tagTypes: ['Category'],
     endpoints: (builder) => ({
