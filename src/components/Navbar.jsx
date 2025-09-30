@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Logout } from "../store/slices/authSlice";
 import { useLogoutUserMutation } from "../store/services/authApi";
 import toast from "react-hot-toast";
+import SearchBar from "./SearchBar";
 
 const Navbar = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth)
@@ -36,11 +37,7 @@ const Navbar = () => {
 
       {/* Center - Search Bar */}
       <div className="flex-1 flex justify-center px-3">
-        <input
-          type="text"
-          placeholder="Search"
-          className="input input-bordered w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg"
-        />
+      <SearchBar/>
       </div>
 
       {/* Right - Auth / Avatar */}

@@ -1,29 +1,25 @@
 import React, { useState } from "react";
+import { useGetCategoryQuery } from "../store/services/categoryApi";
+import { useCategory } from "../context/CategoryContext";
 
 function CategoriesChips() {
-  // Categories list (All by default first)
-  const categories = [
-    "All",
-    "Technology",
-    "Health",
-    "Travel",
-    "Lifestyle",
-    "Education",
-    "Business",
-    "Food",
-    "Sports",
-  ];
+  const { data, isLoading } = useGetCategoryQuery();
+  
+  const {selectCategory,setSelectCategory} = useCategory()
 
-  const [activeCategory, setActiveCategory] = useState("All");
+  if (isLoading) return <p>Loading categories...</p>;
+
+  // API se categories list
+  const categories = ["All", ...(data?.data?.map((cat) => cat.name) || [])];
 
   return (
     <div className="w-full flex flex-wrap justify-center gap-3 py-6 bg-base-200">
       {categories.map((category, index) => (
         <span
           key={index}
-          onClick={() => setActiveCategory(category)}
+          onClick={() => setSelectCategory(category)}
           className={`badge badge-lg px-4 py-3 cursor-pointer transition-all ${
-            activeCategory === category
+            selectCategory === category
               ? "bg-primary text-white shadow-md"
               : "bg-base-100 text-base-content hover:bg-primary hover:text-white"
           }`}

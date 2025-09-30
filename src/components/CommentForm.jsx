@@ -1,12 +1,24 @@
 import React, { useState } from "react";
+import { useCreateCommentMutation } from "../store/services/commentApi";
+import toast from "react-hot-toast";
 
-function CommentForm() {
+
+function CommentForm({ postId }) {
+  const [createComment, { isLoading, error }] = useCreateCommentMutation();
   const [comment, setComment] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("New Comment:", comment);
-    setComment("");
+    if (!comment.trim()) return;
+    try {
+      await createComment({ postId, content: comment }).unwrap();
+      
+     
+      setComment("");
+      toast.success("Comment added successfully!");
+    } catch (err) {
+     toast.error(err.message||"server Error")
+    }
   };
 
   return (
@@ -18,9 +30,10 @@ function CommentForm() {
         onChange={(e) => setComment(e.target.value)}
         required
       ></textarea>
-      <button type="submit" className="btn btn-primary">
-        Add Comment
+      <button type="submit" className="btn btn-primary" disabled={isLoading}>
+        {isLoading ? "Adding..." : "Add Comment"}
       </button>
+      {error && <div className="text-red-500">Error adding comment.</div>}
     </form>
   );
 }

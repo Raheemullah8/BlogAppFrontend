@@ -4,13 +4,19 @@ import { useGetUsersQuery } from "../../store/services/authApi";
 import Loading from "../../components/Loading";
 import { useGetCategoryQuery } from "../../store/services/categoryApi";
 import { useGetPostQuery } from "../../store/services/postApi";
+import { useGetAllCommentQuery } from "../../store/services/commentApi";
 
 function DashboardHome() {
   const { data: usersData, isLoading } = useGetUsersQuery();
   const { data: categoriesData, isLoading: catLoading } = useGetCategoryQuery();
   const {data: postData, isLoading:postLoading} = useGetPostQuery();
+  const {data:commentData,isLoading:commentLoading} = useGetAllCommentQuery()
 
-  if (isLoading || catLoading || postLoading) {
+  
+
+
+
+  if (isLoading || catLoading || postLoading || commentLoading) {
     return <Loading />;
   }
   
@@ -48,7 +54,7 @@ function DashboardHome() {
             <MessageSquare size={32} />
           </div>
           <div className="stat-title">Total Comments</div>
-          <div className="stat-value">980</div>
+          <div className="stat-value">{commentData?.comments.length}</div>
           <div className="stat-desc">+210 new this week</div>
         </div>
 

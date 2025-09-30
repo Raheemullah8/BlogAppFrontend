@@ -7,13 +7,16 @@ import RecentPosts from '../components/PostCard'
 import PostCard from '../components/PostCard'
 
 
+
 function Home() {
+
   return (
 <>
 
 <Slider/>
 <CategoriesChips/>
 <PostCard/>
+
 </>
   )
 }

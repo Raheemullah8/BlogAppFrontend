@@ -14,6 +14,7 @@ import storage from "redux-persist/lib/storage";
 import { authApi } from "./services/authApi";
 import { categoryApi } from "./services/categoryApi";
 import { postApi } from "./services/postApi";
+import { commentApi } from "./services/commentApi";
 
 const persistConfig = {
   key: "auth",   
@@ -29,6 +30,7 @@ export const store = configureStore({
         [authApi.reducerPath]: authApi.reducer,
         [categoryApi.reducerPath]: categoryApi.reducer,
         [postApi.reducerPath]: postApi.reducer,
+        [commentApi.reducerPath]: commentApi.reducer,
     },
 
     middleware: (getDefaultMiddleware) =>
@@ -40,6 +42,7 @@ export const store = configureStore({
             authApi.middleware,
             categoryApi.middleware,
             postApi.middleware,
+            commentApi.middleware,
         ),
 })
 
