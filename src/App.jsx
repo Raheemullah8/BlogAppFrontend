@@ -14,6 +14,7 @@ import Users from './pages/dashboard/Users'
 import { Toaster } from 'react-hot-toast'
 import ProtectedRoute from './components/ProtectedRoute'
 import GuestRoute from './components/GuestRoute'
+import Comments from './pages/dashboard/Comments'
 function App() {
   return (
     <>
@@ -56,6 +57,7 @@ function App() {
           <Route path='posts' element={<Post />} />
           <Route path='category' element={<Category />} />
           <Route path='users' element={<Users />} />
+          <Route path='comment' element={<Comments />} />
         </Route>
       </Routes>
     </BrowserRouter>

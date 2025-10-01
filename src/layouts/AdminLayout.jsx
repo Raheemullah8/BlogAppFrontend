@@ -9,6 +9,7 @@ import {
   ChevronRight,
   Menu,
   X,
+   MessageSquare,
 } from "lucide-react";
 
 function AdminLayout() {
@@ -21,6 +22,7 @@ function AdminLayout() {
     { path: "/admin/posts", label: "Manage Posts", icon: <FileText size={20} /> },
     { path: "/admin/category", label: "Manage Category", icon: <Folder size={20} /> },
     { path: "/admin/users", label: "Manage Users", icon: <Users size={20} /> },
+    { path: "/admin/comment", label: "Manage Comments", icon: <MessageSquare size={20} /> },
   ];
 
   return (
