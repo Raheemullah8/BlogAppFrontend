@@ -39,8 +39,8 @@ function SinglePost() {
   }
   
   // 4. Data Mapping
-  const postTitle = post.content || "Untitled Post"; // Content ko Title maan rahe hain
-  const postImage = post.postimage || "https://via.placeholder.com/600x300"; 
+  const postTitle = post?.title || "Untitled Post"; // Content ko Title maan rahe hain
+  const postImage = post?.postimage || "https://via.placeholder.com/600x300"; 
   // Assuming 'content' field mein post body/description hai
 
   return (
