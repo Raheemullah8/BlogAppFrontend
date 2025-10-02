@@ -41,7 +41,7 @@ function PostCard() {
     <div className="px-6 py-10">
       <h2 className="text-3xl font-bold mb-8 text-center">✨ Recent Posts</h2>
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {filterPost?.map((post) => (
+        {filterPost?.slice()?.reverse()?.map((post) => (
           <div
             key={post._id}
             className="card bg-base-100 shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 rounded-xl border border-gray-200 overflow-hidden"
