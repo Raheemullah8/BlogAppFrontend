@@ -71,11 +71,11 @@ function Post() {
                     <td>
                       <div className="avatar">
                         <div className="w-12 h-12 rounded">
-                          <img src={post?.postimage} alt={post.content} />
+                          <img src={post?.postimage} alt={post.title} />
                         </div>
                       </div>
                     </td>
-                    <td>{post?.content}</td>
+                    <td>{post?.title}</td>
                     <td>{post?.category?.name}</td>
                     <td>
                       <button
@@ -94,18 +94,18 @@ function Post() {
 
           {/* Mobile cards */}
           <div className="md:hidden space-y-4">
-            {posts.map((post, i) => (
+            {posts.map((post) => (
               <div
                 key={post._id}
                 className="card bg-base-200 shadow p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4"
               >
                 <div className="avatar">
                   <div className="w-16 h-16 rounded">
-                    <img src={post?.postimage} alt={post?.content} />
+                    <img src={post?.postimage} alt={post?.title} />
                   </div>
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-bold">{post.content}</h3>
+                  <h3 className="font-bold">{post?.title}</h3>
                   <p className="text-sm text-gray-500">{post.category.name}</p>
                 </div>
                 <button
