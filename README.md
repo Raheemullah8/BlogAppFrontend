@@ -1,12 +1,56 @@
-# React + Vite
+Blog Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack blog application built with React (Vite) for the frontend and MongoDB, Express.js, Node.js for the backend. The app includes both user interface and admin panel, with authentication, post management, categories, and comments functionality.
 
-Currently, two official plugins are available:
+🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🔐 Authentication & Authorization with Redux Toolkit Auth Slice
 
-## Expanding the ESLint configuration
+📝 Post Management: Create, edit, delete, and view blog posts
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+💬 Comments System for user interaction
+
+🔎 Search & Categories to filter and find posts easily
+
+🖥️ Admin Panel: Manage posts, categories, and users
+
+🎨 Responsive UI with DaisyUI + Tailwind CSS
+
+⚡ State Management using Redux Toolkit + RTK Query
+
+🌐 Context API for additional state handling
+
+🔄 React Router DOM for navigation between pages
+
+🛠️ Tech Stack
+
+Frontend
+
+React.js (Vite)
+
+React Router DOM
+
+DaisyUI + Tailwind CSS
+
+Redux Toolkit (RTK Query)
+
+Context API
+
+Backend
+
+Node.js + Express.js
+
+MongoDB
+
+📦 Installation
+# Clone repo
+git clone https://github.com/your-username/blog-app.git
+
+# Navigate
+cd blog-app
+
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
